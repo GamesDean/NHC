@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/ge_splash_sfocatura"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="25sp"
+        android:background="@drawable/rounded_edge_debug">
+
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="5dp"
+            android:textColor="#777"
+            android:textSize="16sp" />
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="@dimen/fab_margin"
+            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:backgroundTint="#4f9e33"
+            app:srcCompat="@android:drawable/ic_menu_manage" />
+
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="50sp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/rounded_edge">
+
+        <TextView
+            android:id="@+id/info_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:textColor="#777"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="170dp"
+            android:layout_marginRight="15dp"
+            android:textColor="#4f9e33"
+            android:popupBackground="#4f9e33"
+            android:backgroundTint="#4f9e33"
+            tools:listitem="@android:layout/simple_spinner_item"/>
+
+        <Spinner
+            android:id="@+id/spinner2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="280dp"
+            android:layout_marginRight="15dp"
+            android:backgroundTint="#4f9e33"
+            android:popupBackground="#4f9e33"
+            android:textColor="#4f9e33"
+            tools:listitem="@android:layout/simple_spinner_item" />
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           android:layout_centerHorizontal="true"
+            android:layout_marginTop="370dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#4f9e33"
+            app:srcCompat="@android:drawable/ic_menu_save" />
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>
