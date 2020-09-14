@@ -21,6 +21,8 @@ class MyCustomAppIntro : AppIntro() {
         // Call addSlide passing your Fragments.
         // You can use AppIntroFragment to use a pre-built fragment
 
+        //123
+
         addSlide(AppIntroFragment.newInstance(
                 "1) Attivare l'NFC ",
                 "NHC : NFC Hixos Configurator",
