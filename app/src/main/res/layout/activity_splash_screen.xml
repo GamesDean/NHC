@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center|bottom"
     android:orientation="vertical"
-    tools:context="com.menowattge.nhc.nfcreadwrite.com.menowattge.nhc.SplashScreenActivity">
+    tools:context="com.menowattge.nhc.SplashScreenActivity">
 
 
     <ImageView
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        app:srcCompat="@mipmap/ge_splash"
+        app:srcCompat="@mipmap/splash_nhc"
         android:contentDescription=""
         tools:ignore="ContentDescription" />
 </RelativeLayout>

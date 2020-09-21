@@ -17,6 +17,7 @@ import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -66,7 +67,7 @@ public class MainActivity extends Activity {
 
         tvNFCContent = (TextView) findViewById(R.id.nfc_contents);
         info = findViewById(R.id.info);
-        info2 = findViewById(R.id.info_2);
+       // info2 = findViewById(R.id.info_2);
         //message = (TextView) findViewById(R.id.edit_message);
         btnWrite =  findViewById(R.id.button2);
         btnDiagnostica =  findViewById(R.id.button);
@@ -74,11 +75,11 @@ public class MainActivity extends Activity {
         spinner2 = findViewById(R.id.spinner2);
 
         info.setTypeface(null, Typeface.BOLD);
-        info2.setTypeface(null, Typeface.BOLD);
+    //    info2.setTypeface(null, Typeface.BOLD);
 
         info.setText("Sezione diagnostica ");
 
-        info2.setText("\n1) Seleziona il Programma e la Potenza" + "\n2) Premi il pulsante 'Salva'\n"+"3) Avvicina il telefono/tablet al sensore NFC dell'alimentatore per inviare i dati'");
+       // info2.setText("\n1) Seleziona il Programma e la Potenza" + "\n2) Premi il pulsante 'Salva'\n"+"3) Avvicina il telefono/tablet al sensore NFC dell'alimentatore per inviare i dati'");
 
         String [] listaProgrammi = {"Seleziona Programma","Programma 1:23M2","Programma 2:23M2","Programma 3:22M2","Programma 4:22M3","Programma 5:ERP", "Programma 6:EMX","Programma 7:23EMP","Programma 8:22EMP","Programma 9:23ERP",
                 "Programma 10:22ERP", "Programma 11:23M2S2", "Programma 12:23M3S2","Programma 13:22M2S2","Programma 14:22M3S2","Programma 15:LSM2","Programma 16:LSM3", "Programma 17:LSM2S2", "Programma 18:LSM3S2","Programma 19:R400","Programma 20:P20"};
@@ -236,9 +237,13 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                payload=payloadSpinner1+payloadSpinner2;
                 if(!payloadSpinner1.equals("") && !payloadSpinner2.equals("")) {
-                    Toast.makeText(context, "OK, avvicina il telefono all'NFC dell'alimentatore per inviare il messaggio", Toast.LENGTH_LONG).show();
+                    Snackbar.make(v, "OK, avvicina il telefono all'NFC dell'alimentatore per inviare il messaggio", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                   // Toast.makeText(context, "OK, avvicina il telefono all'NFC dell'alimentatore per inviare il messaggio", Toast.LENGTH_LONG).show();
                 }else{
-                    Toast.makeText(context, "Selezione non valida", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context, "Selezione non valida", Toast.LENGTH_LONG).show();
+                    Snackbar.make(v, "Selezione non valida", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                 }
             }
         });

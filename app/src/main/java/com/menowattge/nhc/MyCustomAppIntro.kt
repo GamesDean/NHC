@@ -25,21 +25,39 @@ class MyCustomAppIntro : AppIntro() {
 
         addSlide(AppIntroFragment.newInstance(
                 "1) Attivare l'NFC ",
-                "NHC : NFC Hixos Configurator",
-                R.drawable.ge_splash_sfocatura,
-                Color.parseColor("#9aa098")
+                "Dalle impostazioni del proprio smartphone",
+                R.drawable.nfc,
+                Color.parseColor("#87b5b7")
         )
         )
         addSlide(AppIntroFragment.newInstance("2) Selezionare Programma e Potenza ",
-                "NHC : NFC Hixos Configurator",
-                R.drawable.ge_splash_sfocatura,
-                Color.parseColor("#9aa098")
+                "Dal menù a tendina, come da immagine",
+                R.drawable.seleziona,
+                Color.parseColor("#87b5b7")
 
         ))
         addSlide(AppIntroFragment.newInstance("3) Salvare premendo il pulsante a forma di Floppy... ",
-                "...avvicinarsi ad Hixos per ultimare la configurazione",
-                R.drawable.ge_splash_sfocatura,
-                Color.parseColor("#d0d3c6")
+                "..poi avvicinarsi al TAG NFC di Hixos finchè non compare il messaggio : 'Operazione Completata' ",
+                R.drawable.pulsante_red,
+                Color.parseColor("#87b5b7")
+
+        ))
+        addSlide(AppIntroFragment.newInstance("4a) Verificare il contenuto del TAG ",
+                "Utile per controllare il contenuto del TAG NFC",
+                R.drawable.diagnostica_1,
+                Color.parseColor("#87b5b7")
+
+        ))
+        addSlide(AppIntroFragment.newInstance("4b) Avvicinare lo smartphone al TAG ",
+                "..poi premere il tasto info per visualizzare i dati",
+                R.drawable.diagnostica_2,
+                Color.parseColor("#87b5b7")
+
+        ))
+        addSlide(AppIntroFragment.newInstance("4c) Dati NFC Hixos ",
+                "In rosso il contenuto del TAG",
+                R.drawable.diagnostica_3,
+                Color.parseColor("#87b5b7")
 
         ))
     }
