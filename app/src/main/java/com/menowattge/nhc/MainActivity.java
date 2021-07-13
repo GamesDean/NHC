@@ -3,6 +3,7 @@ package com.menowattge.nhc;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,6 +13,7 @@ import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -56,6 +59,10 @@ public class MainActivity extends Activity {
     String payloadSpinner1,payloadSpinner2,m ;
     String payload="";
 
+    String text;
+
+    private ProgressDialog pd;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,12 +91,16 @@ public class MainActivity extends Activity {
         String [] listaProgrammi = {"Seleziona Programma","Programma 1:23M2","Programma 2:23M2","Programma 3:22M2","Programma 4:22M3","Programma 5:ERP", "Programma 6:EMX","Programma 7:23EMP","Programma 8:22EMP","Programma 9:23ERP",
                 "Programma 10:22ERP", "Programma 11:23M2S2", "Programma 12:23M3S2","Programma 13:22M2S2","Programma 14:22M3S2","Programma 15:LSM2","Programma 16:LSM3", "Programma 17:LSM2S2", "Programma 18:LSM3S2","Programma 19:R400","Programma 20:P20"};
 
-        String [] potenze ={"Seleziona Potenza","400 mA","450 mA","500 mA","550 mA","600 mA","650 mA","700 mA"};
+        String [] potenze ={"Seleziona Corrente","400 mA","450 mA","500 mA","550 mA","600 mA","650 mA","700 mA"};
 
         ArrayAdapter<String> powerAdapter = new ArrayAdapter<String>(this,R.layout.spinner_item, potenze);
         ArrayAdapter<String> programAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, listaProgrammi);
         spinner1.setAdapter(programAdapter);
         spinner2.setAdapter(powerAdapter);
+
+        pd = new ProgressDialog(new ContextThemeWrapper(MainActivity.this,R.style.ProgressDialogCustom));
+
+
 
 
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -233,27 +244,36 @@ public class MainActivity extends Activity {
 
 
         btnWrite.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-               payload=payloadSpinner1+payloadSpinner2;
-                if(!payloadSpinner1.equals("") && !payloadSpinner2.equals("")) {
-                    Snackbar.make(v, "OK, avvicina il telefono all'NFC dell'alimentatore per inviare il messaggio", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                   // Toast.makeText(context, "OK, avvicina il telefono all'NFC dell'alimentatore per inviare il messaggio", Toast.LENGTH_LONG).show();
-                }else{
-                    //Toast.makeText(context, "Selezione non valida", Toast.LENGTH_LONG).show();
-                    Snackbar.make(v, "Selezione non valida", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                boolean nfc_enabled = checkNfc();
+                if (nfc_enabled) {
+                    payload = payloadSpinner1 + payloadSpinner2;
+                    if (!payloadSpinner1.equals("") && !payloadSpinner2.equals("")) {
+                        spinner1.setEnabled(false);
+                        spinner2.setEnabled(false);
+                        Snackbar.make(v, "OK, avvicina il telefono all'NFC dell'alimentatore per inviare il messaggio", 5000)
+                                .setAction("Action", null).show();
+                    } else {
+                        Snackbar.make(v, "Selezione non valida", 5000)
+                                .setAction("Action", null).show();
+                    }
                 }
             }
+
+
         });
 
         btnDiagnostica.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //readFromIntent(getIntent());
-                Intent intent = new Intent(getApplicationContext(),DiagnosticActivity.class);
-                startActivity(intent);
+                boolean nfc_enabled = checkNfc();
+                if(nfc_enabled) {
+                    Intent intent = new Intent(getApplicationContext(), DiagnosticActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -270,6 +290,8 @@ public class MainActivity extends Activity {
         IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
         tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
         writeTagFilters = new IntentFilter[] { tagDetected };
+
+        checkTag();
     }
 
 
@@ -299,7 +321,7 @@ public class MainActivity extends Activity {
     private void buildTagViews(NdefMessage[] msgs) {
         if (msgs == null || msgs.length == 0) return;
 
-        String text = "";
+
 //        String tagId = new String(msgs[0].getRecords()[0].getType());
         byte[] payload = msgs[0].getRecords()[0].getPayload();
         String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16"; // Get the Text Encoding
@@ -313,7 +335,8 @@ public class MainActivity extends Activity {
             Log.e("UnsupportedEncoding", e.toString());
         }
 
-        tvNFCContent.setText("Contenuto NFC : " + text);
+        //tvNFCContent.setText("Contenuto NFC : " + text);
+        Log.d("CONTENUTO NFC : ",text);
     }
 
 
@@ -332,6 +355,7 @@ public class MainActivity extends Activity {
         ndef.writeNdefMessage(message);
         // Close the connection
         ndef.close();
+
     }
     private NdefRecord createRecord(String text) throws UnsupportedEncodingException {
         String lang       = "en";
@@ -354,6 +378,52 @@ public class MainActivity extends Activity {
     }
 
 
+    public boolean checkNfc(){
+        NfcManager manager = (NfcManager) context.getSystemService(Context.NFC_SERVICE);
+        NfcAdapter adapter = manager.getDefaultAdapter();
+        if (adapter != null && adapter.isEnabled()) {
+            // adapter exists and is enabled.
+            return true;
+        }else{
+            Toast.makeText(this,"ATTENZIONE : Attivare l'NFC",Toast.LENGTH_LONG).show();
+            return false;
+        }
+    }
+
+    public void checkTag(){
+
+        pd.setMessage("Ricerca TAG NFC in corso...");
+        pd.show();
+        pd.setCanceledOnTouchOutside(false);
+
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    System.out.println("testo :" +text);
+                        while (text==null){
+                            readFromIntent(getIntent());
+                            System.out.println("testo_2 :" +text);
+                        }
+                        pd.dismiss();
+                        Log.d("DISMISS","PD");
+
+
+
+                    } catch (final Exception e) {
+                       // pd.dismiss();
+                        Toast.makeText(context, "Errore Lettura", Toast.LENGTH_LONG ).show();
+                    }
+            }
+        }).start();
+
+
+    }
+
+
+
+
+
+
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -373,11 +443,15 @@ public class MainActivity extends Activity {
     @Override
     public void onResume(){
         super.onResume();
+        checkNfc();
         WriteModeOn();
-        if (myTag!=null && payload!=null){
+        if (myTag!=null && !payload.equals("")){
             try {
                 write(payload,myTag);
                 Toast.makeText(context, "Operazione Completata", Toast.LENGTH_LONG ).show();
+                Intent intent = new Intent(this,MainActivity.class);
+                startActivity(intent);
+
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (FormatException e) {

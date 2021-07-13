@@ -29,6 +29,7 @@ public class DiagnosticActivity extends AppCompatActivity {
     Tag myTag2;
     TextView tv;
     PendingIntent pendingIntent;
+    String text = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +50,19 @@ public class DiagnosticActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Se la scansione non va a buon fine, avvicinati al TAG e dopo la vibrazione ripremi il pulsante", Snackbar.LENGTH_LONG)
+                readFromIntent(getIntent());
+
+                String message = "Lettura eseguita correttamente";
+
+                if (text==null){
+                    message = "Se la scansione non va a buon fine, avvicinati al TAG e dopo la vibrazione ripremi il pulsante";
+                    tv.setText("Contenuto NFC : " + text);
+                }
+                Snackbar.make(view, message, 5000)
                         .setAction("Action", null).show();
 
-                readFromIntent(getIntent());
+
+                text = null;
 
 
             }
@@ -85,7 +95,7 @@ public class DiagnosticActivity extends AppCompatActivity {
     private void buildTagViews(NdefMessage[] msgs) {
         if (msgs == null || msgs.length == 0) return;
 
-        String text = "";
+
 //        String tagId = new String(msgs[0].getRecords()[0].getType());
         byte[] payload = msgs[0].getRecords()[0].getPayload();
         String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16"; // Get the Text Encoding
@@ -114,10 +124,13 @@ public class DiagnosticActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
+        // per leggere senza premere pulsante
         // readFromIntent(intent);
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())){
             myTag2 = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
         }
+
 
     }
 
@@ -130,5 +143,13 @@ public class DiagnosticActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setupForegroundDispatch(this,NfcAdapter.getDefaultAdapter(this));
+        tv.setText("Avvicinati al tag poi premi il pulsante");
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
     }
 }

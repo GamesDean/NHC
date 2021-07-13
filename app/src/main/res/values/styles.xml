@@ -29,4 +29,10 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="ProgressDialogCustom" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">#4f9e33</item>
+
+    </style>
+
 </resources>

@@ -18,18 +18,13 @@ class MyCustomAppIntro : AppIntro() {
 
         // Make sure you don't call setContentView!
 
-        // Call addSlide passing your Fragments.
-        // You can use AppIntroFragment to use a pre-built fragment
-
-        //123
-
         addSlide(AppIntroFragment.newInstance(
                 "1) Attivare l'NFC ",
                 "Dalle impostazioni del proprio smartphone",
                 R.drawable.nfc,
                 Color.parseColor("#87b5b7")
-        )
-        )
+        ))
+
         addSlide(AppIntroFragment.newInstance("2) Selezionare Programma e Potenza ",
                 "Dal menù a tendina, come da immagine",
                 R.drawable.seleziona,
@@ -60,6 +55,7 @@ class MyCustomAppIntro : AppIntro() {
                 Color.parseColor("#87b5b7")
 
         ))
+
     }
 
     override fun onSkipPressed(currentFragment: Fragment?) {
@@ -77,4 +73,6 @@ class MyCustomAppIntro : AppIntro() {
         startActivity(intent)
         finish()
     }
+
+
 }
