@@ -55,7 +55,7 @@ public class DiagnosticActivity extends AppCompatActivity {
                 String message = "Lettura eseguita correttamente";
 
                 if (text==null){
-                    message = "Se la scansione non va a buon fine, avvicinati al TAG e dopo la vibrazione ripremi il pulsante";
+                    message = "Errore : Tag Corrotto";
                     tv.setText("Contenuto NFC : " + text);
                 }
                 Snackbar.make(view, message, 5000)

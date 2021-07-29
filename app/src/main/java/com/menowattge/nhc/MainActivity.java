@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -31,11 +33,24 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
 import com.menowattge.nhc.nfcreadwrite.R;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class MainActivity extends Activity {
 
@@ -63,6 +78,10 @@ public class MainActivity extends Activity {
 
     private ProgressDialog pd;
 
+    // API login
+    String username="tecnico@citymonitor.it";
+    String password="tecnico";
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,6 +104,36 @@ public class MainActivity extends Activity {
     //    info2.setTypeface(null, Typeface.BOLD);
 
         info.setText("Sezione diagnostica ");
+
+        checkConnection();
+
+        // -------------------------DEBUG API -----------------------
+
+        // debug log http
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .build();
+// end-debug
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://citymonitor.azurewebsites.net/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
+
+
+        String token = LoginCredentials.getAuthToken(username,password);
+
+        getConfigurazioneProfili(retrofit,token);
+
+        //getProfili(retrofit,token);
+
+
+        // -------------------------------END-DEBUG-----------------------------------
 
        // info2.setText("\n1) Seleziona il Programma e la Potenza" + "\n2) Premi il pulsante 'Salva'\n"+"3) Avvicina il telefono/tablet al sensore NFC dell'alimentatore per inviare i dati'");
 
@@ -199,7 +248,7 @@ public class MainActivity extends Activity {
 
                         break;
                     // apice serve come fine stringa per riccardo
-                    case 1 : payloadSpinner2="40^";break;
+                    case 1 : payloadSpinner2="40^";break;           // passo qui l'ID ?
                     case 2 : payloadSpinner2="45^";break;
                     case 3 : payloadSpinner2="50^";break;
                     case 4 : payloadSpinner2="55^";break;
@@ -291,7 +340,7 @@ public class MainActivity extends Activity {
         tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
         writeTagFilters = new IntentFilter[] { tagDetected };
 
-        checkTag();
+       // checkTag();
     }
 
 
@@ -454,8 +503,11 @@ public class MainActivity extends Activity {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                Toast.makeText(context, "Errore : Tag Corrotto", Toast.LENGTH_LONG ).show();
+
             } catch (FormatException e) {
                 e.printStackTrace();
+                Toast.makeText(context, "Errore : Tag Corrotto", Toast.LENGTH_LONG ).show();
             }
         }
     }
@@ -476,4 +528,199 @@ public class MainActivity extends Activity {
         writeMode = false;
         nfcAdapter.disableForegroundDispatch(this);
     }
+
+        /************************************** API ****************************************/
+
+
+    /**
+     * Controlla la connessione internet
+     */
+    public void checkConnection(){
+        final Thread timeout = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+
+                            ConnectivityManager mgr = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                            NetworkInfo netInfo = mgr.getActiveNetworkInfo();
+                            boolean isConnected = netInfo != null &&
+                                    netInfo.isConnectedOrConnecting();
+
+                            if (isConnected ) {
+
+                            }
+                            else {
+                                //No internet
+                                Toast.makeText(getApplicationContext(),"NO INTERNET-IMPOSSIBILE PROSEGUIRE-\nCONNETTERSI E RIAVVIARE L'APP".toUpperCase(),Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                    sleep(4000);
+                }catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        timeout.start();
+    }
+
+
+    /**
+     * Ottiene la lista delle chiavi ddi un contatore
+     * @param retrofit
+     * @param token
+     */
+
+    private List<String> IDDI   = new ArrayList<>();
+    private List<String> Corrente   = new ArrayList<>();
+
+    public void getConfigurazioneProfili(Retrofit retrofit, String token) {
+        JsonApi jsonApi = retrofit.create(JsonApi.class);
+        Call<JsonArray> call = jsonApi.getConfigProfili(token);
+
+        call.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                String rc = String.valueOf(response.code());
+                if (!response.isSuccessful()) {
+                    Log.d("http_get_conf_ko_rc : ", rc);
+
+                }
+                else{
+                    Log.d("http_get_conf_ok_rc : ", rc);
+                    //JSON in risposta, lo salvo in una stringa unica
+
+
+                    String data = response.body().toString();
+                    // divido gli elementi sfruttando la virgola
+                    String[] pairs = data.split(",");
+                    int k=0;
+                    try {
+                        for (String item : pairs){
+
+                            Log.d("ELEMENTI : ",item);
+                            // scremo gli ID
+                            if (!item.substring(item.length()-1).equals("}") && !item.substring(item.length()-1).equals("]")){
+                                // prendo gli ultimi due valori es :6 e 13
+                                String tempID = item.substring(item.length()-2);
+                                // isolo il numero ad una cifra
+                                if (tempID.startsWith(":")){
+                                    IDDI.add(tempID.substring(1,2));
+                                }else{
+                                    IDDI.add(tempID);
+                                }
+                                // scremo le correnti
+                           }else{
+                                String[] pairs2 = item.split(";");
+
+                                for (String item2 : pairs2){
+                                    // isolo i dati
+                                    String[] pairs3 = item2.split(":");
+
+                                    for( String item3 : pairs3){
+
+
+                                        // prendo solo i valori numerici
+                                        if(item3.trim().startsWith("2")||item3.trim().startsWith("3")
+                                                || item3.trim().startsWith("4") ||item3.trim().startsWith("5")
+                                                || item3.trim().startsWith("6")|| item3.trim().startsWith("7")) {
+
+
+                                            if(!(item3.endsWith("}") || item3.endsWith("]"))) {
+                                                Log.d("ITEMSH", item3);
+                                                Corrente.add(item3);
+
+                                            } else{
+                                                String tempitem = item3.substring(1,6);
+
+                                                Log.d("ITEMSHZ",tempitem);
+                                                Corrente.add(tempitem);
+                                                Log.d("CORRENTE",String.valueOf(Corrente));
+                                            }
+
+                                        }
+                                    }
+
+                                }
+                            }
+
+                        }
+
+                    }catch (Error e){e.printStackTrace();
+
+                    }
+
+
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+                Log.d("http_rc_fail : ", t.getMessage());
+            }
+        });
+
+    }
+
+
+    public void getProfili(Retrofit retrofit, String token) {
+        JsonApi jsonApi = retrofit.create(JsonApi.class);
+        Call<JsonArray> call = jsonApi.getProfili(token);
+
+        call.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                String rc = String.valueOf(response.code());
+                if (!response.isSuccessful()) {
+                    Log.d("http_get_profili_ko_rc : ", rc);
+
+                }
+                else{
+                    Log.d("http_get_profili_ok_rc : ", rc);
+                    //JSON in risposta, lo salvo in una stringa unica
+                    /*
+
+                    String data = response.body().toString();
+                    // divido gli elementi sfruttando la virgola
+                    String[] pairs = data.split(",");
+                    int k=0;
+                    try {
+                        // vedere la questione VIRGOLA nel CIVICO che sposa da 10 ad 11 posizioni
+                        for (int i = 10; i < 27; i++) { // le chiavi sono 17, le trovo nell'array dalla 10 alla 27
+                            if (i == 10) {
+                                Log.d("crypto",pairs[i].substring(23, 55));
+                              //  cryptoKeys[k] = pairs[i].substring(23, 55); // tolgo la scritta "ChiaviCrittografia"
+                                // chiaviCrittografia.add(pairs[i].substring(23, 55));
+                            } else {
+                              //  cryptoKeys[k] = pairs[i].substring(1, 33); // tolgo virgolette
+                                Log.d("crypto2",pairs[i].substring(1, 33));
+
+                                // chiaviCrittografia.add(pairs[i].substring(1, 33));
+                            }
+                            k++;
+                        }
+
+                        // inserisco le singole chiavi nell' arraylist
+
+
+                    }catch (Error e){e.printStackTrace();
+
+                    }
+
+                     */
+                }
+            }
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+                Log.d("http_rc_fail : ", t.getMessage());
+            }
+        });
+
+    }
+
+
+
+
 }
