@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -81,6 +82,11 @@ public class MainActivity extends Activity {
     // API login
     String username="tecnico@citymonitor.it";
     String password="tecnico";
+
+    private List<String> IDDI   = new ArrayList<>();
+    private List<String> Corrente   = new ArrayList<>();
+
+    public String [] potenze;
 
 
     @Override
@@ -130,7 +136,7 @@ public class MainActivity extends Activity {
 
         getConfigurazioneProfili(retrofit,token);
 
-        //getProfili(retrofit,token);
+        getProfili(retrofit,token);
 
 
         // -------------------------------END-DEBUG-----------------------------------
@@ -140,12 +146,16 @@ public class MainActivity extends Activity {
         String [] listaProgrammi = {"Seleziona Programma","Programma 1:23M2","Programma 2:23M2","Programma 3:22M2","Programma 4:22M3","Programma 5:ERP", "Programma 6:EMX","Programma 7:23EMP","Programma 8:22EMP","Programma 9:23ERP",
                 "Programma 10:22ERP", "Programma 11:23M2S2", "Programma 12:23M3S2","Programma 13:22M2S2","Programma 14:22M3S2","Programma 15:LSM2","Programma 16:LSM3", "Programma 17:LSM2S2", "Programma 18:LSM3S2","Programma 19:R400","Programma 20:P20"};
 
-        String [] potenze ={"Seleziona Corrente","400 mA","450 mA","500 mA","550 mA","600 mA","650 mA","700 mA"};
+        //String [] potenze ={"Seleziona Corrente","400 mA","450 mA","500 mA","550 mA","600 mA","650 mA","700 mA"};
 
-        ArrayAdapter<String> powerAdapter = new ArrayAdapter<String>(this,R.layout.spinner_item, potenze);
+
+
+        //ArrayAdapter<String> powerAdapter = new ArrayAdapter<String>(this,R.layout.spinner_item, potenze);
+        //spinner2.setAdapter(powerAdapter);
+
         ArrayAdapter<String> programAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, listaProgrammi);
         spinner1.setAdapter(programAdapter);
-        spinner2.setAdapter(powerAdapter);
+
 
         pd = new ProgressDialog(new ContextThemeWrapper(MainActivity.this,R.style.ProgressDialogCustom));
 
@@ -248,13 +258,29 @@ public class MainActivity extends Activity {
 
                         break;
                     // apice serve come fine stringa per riccardo
-                    case 1 : payloadSpinner2="40^";break;           // passo qui l'ID ?
+                  /*  case 1 : payloadSpinner2="40^";break;           // passo qui l'ID ?
                     case 2 : payloadSpinner2="45^";break;
                     case 3 : payloadSpinner2="50^";break;
                     case 4 : payloadSpinner2="55^";break;
                     case 5 : payloadSpinner2="60^";break;
                     case 6 : payloadSpinner2="65^";break;
                     case 7 : payloadSpinner2="70^";break;
+
+                   */
+                    case 1 : payloadSpinner2="1 "+potenze[1];break; // 1 400 400 400    TODO apice? tohex?
+                    case 2 : payloadSpinner2="2 "+potenze[2];break;// 2 350 400 500
+                    case 3 : payloadSpinner2="3 "+potenze[3];break;
+                    case 4 : payloadSpinner2="4 "+potenze[4];break;
+                    case 5 : payloadSpinner2="5 "+potenze[5];break;
+                    case 6 : payloadSpinner2="6 "+potenze[6];break;
+                    case 7 : payloadSpinner2="7 "+potenze[7];break;
+                    case 8 : payloadSpinner2="8 "+potenze[8];break;
+                    case 9 : payloadSpinner2="9 "+potenze[9];break;
+                    case 10 : payloadSpinner2="10 "+potenze[10];break;
+                    case 11 : payloadSpinner2="11 "+potenze[11];break;
+                    case 12 : payloadSpinner2="12 "+potenze[12];break;
+                    case 13 : payloadSpinner2="13 "+potenze[13];break;
+
                 }
             }
 
@@ -298,7 +324,8 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 boolean nfc_enabled = checkNfc();
                 if (nfc_enabled) {
-                    payload = payloadSpinner1 + payloadSpinner2;
+                    Log.d("payload",payloadSpinner2);
+                    payload = payloadSpinner1 + payloadSpinner2;  // TODO to hex?
                     if (!payloadSpinner1.equals("") && !payloadSpinner2.equals("")) {
                         spinner1.setEnabled(false);
                         spinner2.setEnabled(false);
@@ -569,13 +596,12 @@ public class MainActivity extends Activity {
 
 
     /**
-     * Ottiene la lista delle chiavi ddi un contatore
+     * Ottiene la lista dei profili
      * @param retrofit
      * @param token
      */
 
-    private List<String> IDDI   = new ArrayList<>();
-    private List<String> Corrente   = new ArrayList<>();
+
 
     public void getConfigurazioneProfili(Retrofit retrofit, String token) {
         JsonApi jsonApi = retrofit.create(JsonApi.class);
@@ -593,15 +619,12 @@ public class MainActivity extends Activity {
                     Log.d("http_get_conf_ok_rc : ", rc);
                     //JSON in risposta, lo salvo in una stringa unica
 
-
                     String data = response.body().toString();
                     // divido gli elementi sfruttando la virgola
                     String[] pairs = data.split(",");
-                    int k=0;
                     try {
                         for (String item : pairs){
 
-                            Log.d("ELEMENTI : ",item);
                             // scremo gli ID
                             if (!item.substring(item.length()-1).equals("}") && !item.substring(item.length()-1).equals("]")){
                                 // prendo gli ultimi due valori es :6 e 13
@@ -621,24 +644,22 @@ public class MainActivity extends Activity {
                                     String[] pairs3 = item2.split(":");
 
                                     for( String item3 : pairs3){
-
-
                                         // prendo solo i valori numerici
                                         if(item3.trim().startsWith("2")||item3.trim().startsWith("3")
                                                 || item3.trim().startsWith("4") ||item3.trim().startsWith("5")
                                                 || item3.trim().startsWith("6")|| item3.trim().startsWith("7")) {
 
-
                                             if(!(item3.endsWith("}") || item3.endsWith("]"))) {
-                                                Log.d("ITEMSH", item3);
-                                                Corrente.add(item3);
+                                                Corrente.add(item3.substring(0,4)); // senza mA
 
                                             } else{
                                                 String tempitem = item3.substring(1,6);
 
-                                                Log.d("ITEMSHZ",tempitem);
-                                                Corrente.add(tempitem);
-                                                Log.d("CORRENTE",String.valueOf(Corrente));
+                                               // Log.d("ITEMSHZ",tempitem); // con mA
+                                                Corrente.add(tempitem.substring(0,3)); // senza mA
+
+                                                fillSpinner();
+
                                             }
 
                                         }
@@ -652,9 +673,12 @@ public class MainActivity extends Activity {
                     }catch (Error e){e.printStackTrace();
 
                     }
+                   // Log.d("CORRENTE",String.valueOf(Corrente));
+                   // Log.d("CORRENTE_ID",String.valueOf(IDDI));
 
 
                 }
+
             }
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
@@ -663,6 +687,8 @@ public class MainActivity extends Activity {
         });
 
     }
+
+
 
 
     public void getProfili(Retrofit retrofit, String token) {
@@ -680,36 +706,30 @@ public class MainActivity extends Activity {
                 else{
                     Log.d("http_get_profili_ok_rc : ", rc);
                     //JSON in risposta, lo salvo in una stringa unica
-                    /*
 
                     String data = response.body().toString();
                     // divido gli elementi sfruttando la virgola
                     String[] pairs = data.split(",");
-                    int k=0;
-                    try {
-                        // vedere la questione VIRGOLA nel CIVICO che sposa da 10 ad 11 posizioni
-                        for (int i = 10; i < 27; i++) { // le chiavi sono 17, le trovo nell'array dalla 10 alla 27
-                            if (i == 10) {
-                                Log.d("crypto",pairs[i].substring(23, 55));
-                              //  cryptoKeys[k] = pairs[i].substring(23, 55); // tolgo la scritta "ChiaviCrittografia"
-                                // chiaviCrittografia.add(pairs[i].substring(23, 55));
-                            } else {
-                              //  cryptoKeys[k] = pairs[i].substring(1, 33); // tolgo virgolette
-                                Log.d("crypto2",pairs[i].substring(1, 33));
 
-                                // chiaviCrittografia.add(pairs[i].substring(1, 33));
-                            }
-                            k++;
+                    for (int i=0; i<pairs.length;i++){
+
+                        //Log.d("AAA",pairs[i]);
+                        // prendo solo quelli a LED
+                        if (pairs[i].substring(pairs[i].length()-5).equals("\"LED\"")){
+                            // individuati i LED, prendo il Nome e l IdProfilo
+                            Log.d("CCC",pairs[i+1]);
+                            Log.d("CCC",pairs[i+2]);
+
+                            // TODO sono arrivato qui, stampo questo
+                            //"Nome":"22ERP"
+                            //"IdProfilo":10}
+
+                            // TODO iterare e prendere 10 ed 22ERP per poi passarli allo spinner
+                            // TODO lo spinner anche andrà spostato qui o meglio in fillSpinner()
                         }
-
-                        // inserisco le singole chiavi nell' arraylist
-
-
-                    }catch (Error e){e.printStackTrace();
-
                     }
 
-                     */
+
                 }
             }
             @Override
@@ -718,6 +738,25 @@ public class MainActivity extends Activity {
             }
         });
 
+    }
+
+    /**
+     * Riempio lo spinner con i dati delle potenze
+     */
+    public void fillSpinner(){
+        // 39/3 = 13 dato che ho bisogno di raggruppare in triple + 1 perche nella prima posizione c'è l'hint
+        potenze = new String[Corrente.size()/3+1];
+        potenze[0]= new String("Seleziona Potenza"); // hint
+        int z=1;
+        // scorro l'array ed aumento di tre ogni volta
+        for (int i=0;i<Corrente.size();i+=3 ){
+            potenze[z] = Corrente.get(i)+Corrente.get(i+1)+" "+Corrente.get(i+2);
+            z++; // 13 volte in pratica
+        }
+
+        Log.d("CORRENTE_POT", Arrays.toString(potenze));
+        ArrayAdapter<String> powerAdapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.spinner_item, potenze);
+        spinner2.setAdapter(powerAdapter);
     }
 
 
