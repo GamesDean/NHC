@@ -85,8 +85,11 @@ public class MainActivity extends Activity {
 
     private List<String> IDDI   = new ArrayList<>();
     private List<String> Corrente   = new ArrayList<>();
+    private List<String> CorrenteSpinner   = new ArrayList<>();
 
     public String [] potenze;
+    public String [] potenzeTrue;
+    public String [] idProfili;
 
 
     @Override
@@ -267,19 +270,19 @@ public class MainActivity extends Activity {
                     case 7 : payloadSpinner2="70^";break;
 
                    */
-                    case 1 : payloadSpinner2="1 "+potenze[1];break; // 1 400 400 400    TODO apice? tohex?
-                    case 2 : payloadSpinner2="2 "+potenze[2];break;// 2 350 400 500
-                    case 3 : payloadSpinner2="3 "+potenze[3];break;
-                    case 4 : payloadSpinner2="4 "+potenze[4];break;
-                    case 5 : payloadSpinner2="5 "+potenze[5];break;
-                    case 6 : payloadSpinner2="6 "+potenze[6];break;
-                    case 7 : payloadSpinner2="7 "+potenze[7];break;
-                    case 8 : payloadSpinner2="8 "+potenze[8];break;
-                    case 9 : payloadSpinner2="9 "+potenze[9];break;
-                    case 10 : payloadSpinner2="10 "+potenze[10];break;
-                    case 11 : payloadSpinner2="11 "+potenze[11];break;
-                    case 12 : payloadSpinner2="12 "+potenze[12];break;
-                    case 13 : payloadSpinner2="13 "+potenze[13];break;
+                    case 1 : payloadSpinner2="1"+potenzeTrue[1];break; // 1 400 400 400    TODO apice? tohex?
+                    case 2 : payloadSpinner2="2"+potenzeTrue[2];break;// 2 350 400 500
+                    case 3 : payloadSpinner2="3"+potenzeTrue[3];break;
+                    case 4 : payloadSpinner2="4"+potenzeTrue[4];break;
+                    case 5 : payloadSpinner2="5"+potenzeTrue[5];break;
+                    case 6 : payloadSpinner2="6"+potenzeTrue[6];break;
+                    case 7 : payloadSpinner2="7"+potenzeTrue[7];break;
+                    case 8 : payloadSpinner2="8"+potenzeTrue[8];break;
+                    case 9 : payloadSpinner2="9"+potenzeTrue[9];break;
+                    case 10 : payloadSpinner2="10"+potenzeTrue[10];break;
+                    case 11 : payloadSpinner2="11"+potenzeTrue[11];break;
+                    case 12 : payloadSpinner2="12"+potenzeTrue[12];break;
+                    case 13 : payloadSpinner2="13"+potenzeTrue[13];break;
 
                 }
             }
@@ -324,7 +327,16 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 boolean nfc_enabled = checkNfc();
                 if (nfc_enabled) {
-                    Log.d("payload",payloadSpinner2);
+
+                    // rimuovo gli spazi es : 3 450 450 600 -> 3450450600
+                    payloadSpinner2 = payloadSpinner2.replaceAll("\\s+","");
+                    // lo converto in long
+                   // Long ps2 = Long.parseLong(payloadSpinner2);
+                   // String test = Long.toHexString(ps2);
+                    // lo converto in hex
+
+                    Log.d("payload",String.valueOf(payloadSpinner2));
+
                     payload = payloadSpinner1 + payloadSpinner2;  // TODO to hex?
                     if (!payloadSpinner1.equals("") && !payloadSpinner2.equals("")) {
                         spinner1.setEnabled(false);
@@ -650,13 +662,15 @@ public class MainActivity extends Activity {
                                                 || item3.trim().startsWith("6")|| item3.trim().startsWith("7")) {
 
                                             if(!(item3.endsWith("}") || item3.endsWith("]"))) {
-                                                Corrente.add(item3.substring(0,4)); // senza mA
+                                                CorrenteSpinner.add(item3.substring(0,4)); // senza mA
+                                                Corrente.add(item3.substring(0,3)); // senza ultimo 0 ed mA
 
                                             } else{
                                                 String tempitem = item3.substring(1,6);
 
                                                // Log.d("ITEMSHZ",tempitem); // con mA
-                                                Corrente.add(tempitem.substring(0,3)); // senza mA
+                                                CorrenteSpinner.add(tempitem.substring(0,3)); // senza mA
+                                                Corrente.add(tempitem.substring(0,2)); // senza ultimo 0 ed mA
 
                                                 fillSpinner();
 
@@ -717,8 +731,28 @@ public class MainActivity extends Activity {
                         // prendo solo quelli a LED
                         if (pairs[i].substring(pairs[i].length()-5).equals("\"LED\"")){
                             // individuati i LED, prendo il Nome e l IdProfilo
-                            Log.d("CCC",pairs[i+1]);
-                            Log.d("CCC",pairs[i+2]);
+                           // Log.d("CCC",pairs[i+1]);
+                            // Log.d("CCC",pairs[i+2]);
+
+                            // divido  per isolare gli ID
+                            String []idProfilo = pairs[i+2].split(":");
+
+                            idProfili = new String[19]; // inizializzo l'array, vedere la dimensione
+
+                            // il log CCC fa capire il perche faccio questa cosa, per isolare gli ID togliendo le parentesi
+                            for (int j=0; j<idProfilo.length;j++ ){
+                                if(idProfilo[j].endsWith("}")) {
+                                    idProfili[j]=idProfilo[j].substring(0, idProfilo[j].length() - 1);
+                                  //  Log.d("idprof", idProfili[j]);
+                                }
+                                else if (idProfilo[j].endsWith("}]")){
+                                    idProfili[j]=idProfilo[j].substring(0, idProfilo[j].length() - 2);
+                                 //   Log.d("idprofz", idProfili[j]);
+                                }
+                            }
+
+
+
 
                             // TODO sono arrivato qui, stampo questo
                             //"Nome":"22ERP"
@@ -745,16 +779,24 @@ public class MainActivity extends Activity {
      */
     public void fillSpinner(){
         // 39/3 = 13 dato che ho bisogno di raggruppare in triple + 1 perche nella prima posizione c'è l'hint
-        potenze = new String[Corrente.size()/3+1];
+        potenze = new String[CorrenteSpinner.size()/3+1];
+        potenzeTrue = new String[Corrente.size()/3+1];
+
         potenze[0]= new String("Seleziona Potenza"); // hint
+        potenzeTrue[0]= new String("test"); // segnaposto
         int z=1;
         // scorro l'array ed aumento di tre ogni volta
-        for (int i=0;i<Corrente.size();i+=3 ){
-            potenze[z] = Corrente.get(i)+Corrente.get(i+1)+" "+Corrente.get(i+2);
+        for (int i=0;i<CorrenteSpinner.size();i+=3 ){
+            potenze[z] = CorrenteSpinner.get(i)+CorrenteSpinner.get(i+1)+" "+CorrenteSpinner.get(i+2);
             z++; // 13 volte in pratica
         }
+        int j=1;
+        for (int i=0;i<Corrente.size();i+=3 ){
+            potenzeTrue[j] = Corrente.get(i)+Corrente.get(i+1)+" "+Corrente.get(i+2);
+            j++; // 13 volte in pratica
+        }
 
-        Log.d("CORRENTE_POT", Arrays.toString(potenze));
+        Log.d("CORRENTE_POT", Arrays.toString(potenzeTrue));
         ArrayAdapter<String> powerAdapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.spinner_item, potenze);
         spinner2.setAdapter(powerAdapter);
     }
