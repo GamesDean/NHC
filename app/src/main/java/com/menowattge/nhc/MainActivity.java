@@ -87,9 +87,11 @@ public class MainActivity extends Activity {
     private List<String> Corrente   = new ArrayList<>();
     private List<String> CorrenteSpinner   = new ArrayList<>();
 
-    public String [] potenze;
-    public String [] potenzeTrue;
-    public String [] idProfili;
+    public String [] potenze; // per lo spinner dove visualizzo es: 350 400 500
+    public String [] potenzeTrue; // per inviare i dati dove invece tronco l'ultimo zero es : 35 40 50
+
+    private List<String> idProfili   = new ArrayList<>();
+    private List<String> nomeProfili   = new ArrayList<>();
 
 
     @Override
@@ -146,8 +148,8 @@ public class MainActivity extends Activity {
 
        // info2.setText("\n1) Seleziona il Programma e la Potenza" + "\n2) Premi il pulsante 'Salva'\n"+"3) Avvicina il telefono/tablet al sensore NFC dell'alimentatore per inviare i dati'");
 
-        String [] listaProgrammi = {"Seleziona Programma","Programma 1:23M2","Programma 2:23M2","Programma 3:22M2","Programma 4:22M3","Programma 5:ERP", "Programma 6:EMX","Programma 7:23EMP","Programma 8:22EMP","Programma 9:23ERP",
-                "Programma 10:22ERP", "Programma 11:23M2S2", "Programma 12:23M3S2","Programma 13:22M2S2","Programma 14:22M3S2","Programma 15:LSM2","Programma 16:LSM3", "Programma 17:LSM2S2", "Programma 18:LSM3S2","Programma 19:R400","Programma 20:P20"};
+       // String [] listaProgrammi = {"Seleziona Programma","Programma 1:23M2","Programma 2:23M3","Programma 3:22M2","Programma 4:22M3","Programma 5:ERP", "Programma 6:EMX","Programma 7:23EMP","Programma 8:22EMP","Programma 9:23ERP",
+        //        "Programma 10:22ERP", "Programma 11:23M2S2", "Programma 12:23M3S2","Programma 13:22M2S2","Programma 14:22M3S2","Programma 15:LSM2","Programma 16:LSM3", "Programma 17:LSM2S2", "Programma 18:LSM3S2","Programma 19:R400","Programma 20:P20"};
 
         //String [] potenze ={"Seleziona Corrente","400 mA","450 mA","500 mA","550 mA","600 mA","650 mA","700 mA"};
 
@@ -156,8 +158,8 @@ public class MainActivity extends Activity {
         //ArrayAdapter<String> powerAdapter = new ArrayAdapter<String>(this,R.layout.spinner_item, potenze);
         //spinner2.setAdapter(powerAdapter);
 
-        ArrayAdapter<String> programAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, listaProgrammi);
-        spinner1.setAdapter(programAdapter);
+       // ArrayAdapter<String> programAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, nomeProfili);
+       // spinner1.setAdapter(programAdapter);
 
 
         pd = new ProgressDialog(new ContextThemeWrapper(MainActivity.this,R.style.ProgressDialogCustom));
@@ -178,64 +180,64 @@ public class MainActivity extends Activity {
                         payloadSpinner2="";
                         break;
                     case 1:
-                        payloadSpinner1 = "A";
+                        payloadSpinner1 = idProfili.get(0);
                         break;
                     case 2:
-                        payloadSpinner1 = "B";
+                        payloadSpinner1 = idProfili.get(1);
                         break;
                     case 3:
-                        payloadSpinner1 = "C";
+                        payloadSpinner1 = idProfili.get(2);
                         break;
                     case 4:
-                        payloadSpinner1 = "D";
+                        payloadSpinner1 = idProfili.get(3);
                         break;
                     case 5:
-                        payloadSpinner1 = "E";
+                        payloadSpinner1 = idProfili.get(4);
                         break;
                     case 6:
-                        payloadSpinner1 = "F";
+                        payloadSpinner1 = idProfili.get(5);
                         break;
                     case 7:
-                        payloadSpinner1 = "G";
+                        payloadSpinner1 = idProfili.get(6);
                         break;
                     case 8:
-                        payloadSpinner1 = "H";
+                        payloadSpinner1 = idProfili.get(7);
                         break;
                     case 9:
-                        payloadSpinner1 = "I";
+                        payloadSpinner1 = idProfili.get(8);
                         break;
                     case 10:
-                        payloadSpinner1 = "J";
+                        payloadSpinner1 = idProfili.get(9);
                         break;
                     case 11:
-                        payloadSpinner1 = "K";
+                        payloadSpinner1 = idProfili.get(10);
                         break;
                     case 12:
-                        payloadSpinner1 = "L";
+                        payloadSpinner1 = idProfili.get(11);
                         break;
                     case 13:
-                        payloadSpinner1 = "M";
+                        payloadSpinner1 = idProfili.get(12);
                         break;
                     case 14:
-                        payloadSpinner1 = "N";
+                        payloadSpinner1 = idProfili.get(13);
                         break;
                     case 15:
-                        payloadSpinner1 = "O";
+                        payloadSpinner1 = idProfili.get(14);
                         break;
                     case 16:
-                        payloadSpinner1 = "P";
+                        payloadSpinner1 = idProfili.get(15);
                         break;
                     case 17:
-                        payloadSpinner1 = "Q";
+                        payloadSpinner1 = idProfili.get(16);
                         break;
                     case 18:
-                        payloadSpinner1 = "R";
+                        payloadSpinner1 = idProfili.get(17);
                         break;
                     case 19:
-                        payloadSpinner1 = "S";
+                        payloadSpinner1 = idProfili.get(18);
                         break;
                     case 20:
-                        payloadSpinner1="T";
+                        payloadSpinner1=idProfili.get(19);
                         break;
                 }
 
@@ -270,19 +272,19 @@ public class MainActivity extends Activity {
                     case 7 : payloadSpinner2="70^";break;
 
                    */
-                    case 1 : payloadSpinner2="1"+potenzeTrue[1];break; // 1 400 400 400    TODO apice? tohex?
-                    case 2 : payloadSpinner2="2"+potenzeTrue[2];break;// 2 350 400 500
-                    case 3 : payloadSpinner2="3"+potenzeTrue[3];break;
-                    case 4 : payloadSpinner2="4"+potenzeTrue[4];break;
-                    case 5 : payloadSpinner2="5"+potenzeTrue[5];break;
-                    case 6 : payloadSpinner2="6"+potenzeTrue[6];break;
-                    case 7 : payloadSpinner2="7"+potenzeTrue[7];break;
-                    case 8 : payloadSpinner2="8"+potenzeTrue[8];break;
-                    case 9 : payloadSpinner2="9"+potenzeTrue[9];break;
-                    case 10 : payloadSpinner2="10"+potenzeTrue[10];break;
-                    case 11 : payloadSpinner2="11"+potenzeTrue[11];break;
-                    case 12 : payloadSpinner2="12"+potenzeTrue[12];break;
-                    case 13 : payloadSpinner2="13"+potenzeTrue[13];break;
+                    case 1 : payloadSpinner2="1"+"|"+potenzeTrue[1];break; // 1 400 400 400
+                    case 2 : payloadSpinner2="2"+"|"+potenzeTrue[2];break;// 2 350 400 500
+                    case 3 : payloadSpinner2="3"+"|"+potenzeTrue[3];break;
+                    case 4 : payloadSpinner2="4"+"|"+potenzeTrue[4];break;
+                    case 5 : payloadSpinner2="5"+"|"+potenzeTrue[5];break;
+                    case 6 : payloadSpinner2="6"+"|"+potenzeTrue[6];break;
+                    case 7 : payloadSpinner2="7"+"|"+potenzeTrue[7];break;
+                    case 8 : payloadSpinner2="8"+"|"+potenzeTrue[8];break;
+                    case 9 : payloadSpinner2="9"+"|"+potenzeTrue[9];break;
+                    case 10 : payloadSpinner2="10"+"|"+potenzeTrue[10];break;
+                    case 11 : payloadSpinner2="11"+"|"+potenzeTrue[11];break;
+                    case 12 : payloadSpinner2="12"+"|"+potenzeTrue[12];break;
+                    case 13 : payloadSpinner2="13"+"|"+potenzeTrue[13];break;
 
                 }
             }
@@ -335,9 +337,13 @@ public class MainActivity extends Activity {
                    // String test = Long.toHexString(ps2);
                     // lo converto in hex
 
-                    Log.d("payload",String.valueOf(payloadSpinner2));
+                  //  Log.d("payload1",String.valueOf(payloadSpinner1));
+                  //  Log.d("payload2",String.valueOf(payloadSpinner2));
 
-                    payload = payloadSpinner1 + payloadSpinner2;  // TODO to hex?
+                    payload = payloadSpinner2+"|"+ payloadSpinner1;
+
+                    Log.d("payload",payload);
+
                     if (!payloadSpinner1.equals("") && !payloadSpinner2.equals("")) {
                         spinner1.setEnabled(false);
                         spinner2.setEnabled(false);
@@ -506,10 +512,6 @@ public class MainActivity extends Activity {
 
 
     }
-
-
-
-
 
 
 
@@ -727,43 +729,43 @@ public class MainActivity extends Activity {
 
                     for (int i=0; i<pairs.length;i++){
 
-                        //Log.d("AAA",pairs[i]);
                         // prendo solo quelli a LED
                         if (pairs[i].substring(pairs[i].length()-5).equals("\"LED\"")){
                             // individuati i LED, prendo il Nome e l IdProfilo
-                           // Log.d("CCC",pairs[i+1]);
+                            //Log.d("CCC",pairs[i+1]);
                             // Log.d("CCC",pairs[i+2]);
 
-                            // divido  per isolare gli ID
+                            // divido  per isolare gli ID e salvo in un array d'appoggio
                             String []idProfilo = pairs[i+2].split(":");
 
-                            idProfili = new String[19]; // inizializzo l'array, vedere la dimensione
+                            //idProfili = new String[19]; // inizializzo l'array, vedere la dimensione
 
                             // il log CCC fa capire il perche faccio questa cosa, per isolare gli ID togliendo le parentesi
+                            // riempio l'arraylist idProfili con gli ID
                             for (int j=0; j<idProfilo.length;j++ ){
                                 if(idProfilo[j].endsWith("}")) {
-                                    idProfili[j]=idProfilo[j].substring(0, idProfilo[j].length() - 1);
-                                  //  Log.d("idprof", idProfili[j]);
+                                    idProfili.add(idProfilo[j].substring(0, idProfilo[j].length() - 1));
+                                    Log.d("idprof", idProfili.toString());
                                 }
                                 else if (idProfilo[j].endsWith("}]")){
-                                    idProfili[j]=idProfilo[j].substring(0, idProfilo[j].length() - 2);
-                                 //   Log.d("idprofz", idProfili[j]);
+                                    idProfili.add(idProfilo[j].substring(0, idProfilo[j].length() - 2));
+                                    Log.d("idprofz", idProfili.toString());
                                 }
                             }
 
-
-
-
-                            // TODO sono arrivato qui, stampo questo
-                            //"Nome":"22ERP"
-                            //"IdProfilo":10}
-
-                            // TODO iterare e prendere 10 ed 22ERP per poi passarli allo spinner
-                            // TODO lo spinner anche andrà spostato qui o meglio in fillSpinner()
+                            // divido per isolare i nomi e salvo in un array d'appoggio
+                            String []nomeProfilo = pairs[i+1].split(":");
+                            // inizializzo l'array dove salverò i nomi dei profili
+                            // isolo i nomi dei profili e li salvo nell'array non considerando la scritta "Nome" del json
+                            for (int k=0;k<nomeProfilo.length;k++){
+                                if(!nomeProfilo[k].equals("\"Nome\"")){
+                                   nomeProfili.add(nomeProfilo[k].replace("\"",""));
+                                }
+                            }
                         }
                     }
 
-
+                    fillSpinnerProfili();
                 }
             }
             @Override
@@ -799,6 +801,20 @@ public class MainActivity extends Activity {
         Log.d("CORRENTE_POT", Arrays.toString(potenzeTrue));
         ArrayAdapter<String> powerAdapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.spinner_item, potenze);
         spinner2.setAdapter(powerAdapter);
+    }
+
+    public void fillSpinnerProfili(){
+
+        String[]nomiProgrammi = new String[nomeProfili.size()+1]; // +1 altrimenti mi perdo l'ultimo
+        nomiProgrammi[0]= "Seleziona Profilo";
+        for(int i=1; i<nomeProfili.size()+1;i++) {
+
+            nomiProgrammi[i]=nomeProfili.get(i-1); // i-1 perche parto da 1 causa hint ed altrimenti mi skippa il primo elemento
+        }
+            ArrayAdapter<String> programAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinner_item, nomiProgrammi);
+            spinner1.setAdapter(programAdapter);
+
+
     }
 
 
