@@ -61,7 +61,8 @@ class MyCustomAppIntro : AppIntro() {
     override fun onSkipPressed(currentFragment: Fragment?) {
         super.onSkipPressed(currentFragment)
         // Decide what to do when the user clicks on "Skip"
-        val intent = Intent(applicationContext, MainActivity::class.java)  //aa
+        //val intent = Intent(applicationContext, MainActivity::class.java)  //aa
+        val intent = Intent(applicationContext, DiagnosticActivity::class.java)  //aa
         startActivity(intent)
         finish()
     }

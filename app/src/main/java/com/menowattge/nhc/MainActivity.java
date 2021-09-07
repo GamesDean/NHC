@@ -104,15 +104,12 @@ public class MainActivity extends Activity {
 
         tvNFCContent = (TextView) findViewById(R.id.nfc_contents);
         info = findViewById(R.id.info);
-       // info2 = findViewById(R.id.info_2);
-        //message = (TextView) findViewById(R.id.edit_message);
         btnWrite =  findViewById(R.id.button2);
         btnDiagnostica =  findViewById(R.id.button);
         spinner1 = findViewById(R.id.spinner1);
         spinner2 = findViewById(R.id.spinner2);
 
         info.setTypeface(null, Typeface.BOLD);
-    //    info2.setTypeface(null, Typeface.BOLD);
 
         info.setText("Sezione diagnostica ");
 
@@ -120,7 +117,6 @@ public class MainActivity extends Activity {
 
         // -------------------------DEBUG API -----------------------
 
-        // debug log http
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -128,7 +124,7 @@ public class MainActivity extends Activity {
                 .readTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .build();
-// end-debug
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://citymonitor.azurewebsites.net/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -146,27 +142,12 @@ public class MainActivity extends Activity {
 
         // -------------------------------END-DEBUG-----------------------------------
 
-       // info2.setText("\n1) Seleziona il Programma e la Potenza" + "\n2) Premi il pulsante 'Salva'\n"+"3) Avvicina il telefono/tablet al sensore NFC dell'alimentatore per inviare i dati'");
-
-       // String [] listaProgrammi = {"Seleziona Programma","Programma 1:23M2","Programma 2:23M3","Programma 3:22M2","Programma 4:22M3","Programma 5:ERP", "Programma 6:EMX","Programma 7:23EMP","Programma 8:22EMP","Programma 9:23ERP",
-        //        "Programma 10:22ERP", "Programma 11:23M2S2", "Programma 12:23M3S2","Programma 13:22M2S2","Programma 14:22M3S2","Programma 15:LSM2","Programma 16:LSM3", "Programma 17:LSM2S2", "Programma 18:LSM3S2","Programma 19:R400","Programma 20:P20"};
-
-        //String [] potenze ={"Seleziona Corrente","400 mA","450 mA","500 mA","550 mA","600 mA","650 mA","700 mA"};
-
-
-
-        //ArrayAdapter<String> powerAdapter = new ArrayAdapter<String>(this,R.layout.spinner_item, potenze);
-        //spinner2.setAdapter(powerAdapter);
-
-       // ArrayAdapter<String> programAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, nomeProfili);
-       // spinner1.setAdapter(programAdapter);
-
-
         pd = new ProgressDialog(new ContextThemeWrapper(MainActivity.this,R.style.ProgressDialogCustom));
 
-
-
-
+        /**
+         * Spinner per selezionare il Profilo, l'utente sceglie es - "22ERP" ed il payload sarà "10" ovvero l'IdProfilo
+         * parsato dal JSON. Tutto ciò è trasparente all'utente.
+         */
         spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -180,7 +161,7 @@ public class MainActivity extends Activity {
                         payloadSpinner2="";
                         break;
                     case 1:
-                        payloadSpinner1 = idProfili.get(0);
+                        payloadSpinner1 = idProfili.get(0); // es : 9
                         break;
                     case 2:
                         payloadSpinner1 = idProfili.get(1);
@@ -250,6 +231,11 @@ public class MainActivity extends Activity {
             }
         });
 
+
+        /**
+         * Spinner per selezionare le potenze - l'id è statico, le potenze visualizzate hanno 3 decimali
+         * le potenze inviate, per risparmiare spazio, ne hanno due di decimali es : 35 40 50
+         */
         spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -262,17 +248,8 @@ public class MainActivity extends Activity {
                         ((TextView) parent.getChildAt(0)).setTextColor(Color.parseColor("#4f9e33"));
 
                         break;
-                    // apice serve come fine stringa per riccardo
-                  /*  case 1 : payloadSpinner2="40^";break;           // passo qui l'ID ?
-                    case 2 : payloadSpinner2="45^";break;
-                    case 3 : payloadSpinner2="50^";break;
-                    case 4 : payloadSpinner2="55^";break;
-                    case 5 : payloadSpinner2="60^";break;
-                    case 6 : payloadSpinner2="65^";break;
-                    case 7 : payloadSpinner2="70^";break;
 
-                   */
-                    case 1 : payloadSpinner2="1"+"|"+potenzeTrue[1];break; // 1 400 400 400
+                    case 1 : payloadSpinner2="1"+"|"+potenzeTrue[1];break; // 1 400 400 400 (1 è l'ID, è statico per ora)
                     case 2 : payloadSpinner2="2"+"|"+potenzeTrue[2];break;// 2 350 400 500
                     case 3 : payloadSpinner2="3"+"|"+potenzeTrue[3];break;
                     case 4 : payloadSpinner2="4"+"|"+potenzeTrue[4];break;
@@ -296,33 +273,10 @@ public class MainActivity extends Activity {
         });
 
 
-/*
-        btnWrite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (myTag == null) {
-                        Toast.makeText(context, ERROR_DETECTED, Toast.LENGTH_LONG).show();
-                    } else {
-                       if (payloadSpinner1.equals("") || payloadSpinner2.equals("")){
-                           Toast.makeText(context,"Seleziona programma e potenza, poi premi OK ",Toast.LENGTH_LONG).show();
-                       }else {
-                           //write(message.getText().toString(), myTag);
-                           write(payloadSpinner1 + payloadSpinner2, myTag);
-                           Toast.makeText(context, WRITE_SUCCESS, Toast.LENGTH_LONG).show();
-                       }
-                    }
-                } catch (IOException e) {
-                    Toast.makeText(context, WRITE_ERROR, Toast.LENGTH_LONG ).show();
-                    e.printStackTrace();
-                } catch (FormatException e) {
-                    Toast.makeText(context, WRITE_ERROR, Toast.LENGTH_LONG ).show();
-                    e.printStackTrace();
-                }
-            }
-        });*/
 
-
+        /**
+         * Pulsante INVIO
+         */
         btnWrite.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -332,15 +286,8 @@ public class MainActivity extends Activity {
 
                     // rimuovo gli spazi es : 3 450 450 600 -> 3450450600
                     payloadSpinner2 = payloadSpinner2.replaceAll("\\s+","");
-                    // lo converto in long
-                   // Long ps2 = Long.parseLong(payloadSpinner2);
-                   // String test = Long.toHexString(ps2);
-                    // lo converto in hex
 
-                  //  Log.d("payload1",String.valueOf(payloadSpinner1));
-                  //  Log.d("payload2",String.valueOf(payloadSpinner2));
-
-                    payload = payloadSpinner2+"|"+ payloadSpinner1;
+                    payload = payloadSpinner2+"|"+ payloadSpinner1; // pipe come separatore, definito con Riccardo
 
                     Log.d("payload",payload);
 
@@ -359,6 +306,9 @@ public class MainActivity extends Activity {
 
         });
 
+        /**
+         * Pulsante Diagnostica che legge i dati dall'alimentatore e li mostra a video
+         */
         btnDiagnostica.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -372,20 +322,24 @@ public class MainActivity extends Activity {
         });
 
 
+        /**
+         * Controllo funzionalità NFC
+         */
+
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (nfcAdapter == null) {
             // Stop here, we definitely need NFC
             Toast.makeText(this, "NFC non supportato dal telefono.", Toast.LENGTH_LONG).show();
             finish();
         }
-       // readFromIntent(getIntent());
+        // readFromIntent(getIntent());
 
         pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
         IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
         tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
         writeTagFilters = new IntentFilter[] { tagDetected };
 
-       // checkTag();
+        // checkTag();
     }
 
 
@@ -494,19 +448,17 @@ public class MainActivity extends Activity {
             public void run() {
                 try {
                     System.out.println("testo :" +text);
-                        while (text==null){
-                            readFromIntent(getIntent());
-                            System.out.println("testo_2 :" +text);
-                        }
-                        pd.dismiss();
-                        Log.d("DISMISS","PD");
-
-
-
-                    } catch (final Exception e) {
-                       // pd.dismiss();
-                        Toast.makeText(context, "Errore Lettura", Toast.LENGTH_LONG ).show();
+                    while (text==null){
+                        readFromIntent(getIntent());
+                        System.out.println("testo_2 :" +text);
                     }
+                    pd.dismiss();
+                    Log.d("DISMISS","PD");
+
+                } catch (final Exception e) {
+                    // pd.dismiss();
+                    Toast.makeText(context, "Errore Lettura", Toast.LENGTH_LONG ).show();
+                }
             }
         }).start();
 
@@ -518,7 +470,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
-       // readFromIntent(intent);
+        // readFromIntent(intent);
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())){
             myTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         }
@@ -570,7 +522,7 @@ public class MainActivity extends Activity {
         nfcAdapter.disableForegroundDispatch(this);
     }
 
-        /************************************** API ****************************************/
+    /************************************** API ****************************************/
 
 
     /**
@@ -610,13 +562,10 @@ public class MainActivity extends Activity {
 
 
     /**
-     * Ottiene la lista dei profili
+     * Ottiene la lista dei profili ovvero le CORRENTI es : min: 350mA,rid: 400mA,max:550mA
      * @param retrofit
      * @param token
      */
-
-
-
     public void getConfigurazioneProfili(Retrofit retrofit, String token) {
         JsonApi jsonApi = retrofit.create(JsonApi.class);
         Call<JsonArray> call = jsonApi.getConfigProfili(token);
@@ -638,7 +587,6 @@ public class MainActivity extends Activity {
                     String[] pairs = data.split(",");
                     try {
                         for (String item : pairs){
-
                             // scremo gli ID
                             if (!item.substring(item.length()-1).equals("}") && !item.substring(item.length()-1).equals("]")){
                                 // prendo gli ultimi due valori es :6 e 13
@@ -650,7 +598,7 @@ public class MainActivity extends Activity {
                                     IDDI.add(tempID);
                                 }
                                 // scremo le correnti
-                           }else{
+                            }else{
                                 String[] pairs2 = item.split(";");
 
                                 for (String item2 : pairs2){
@@ -669,32 +617,24 @@ public class MainActivity extends Activity {
 
                                             } else{
                                                 String tempitem = item3.substring(1,6);
-
-                                               // Log.d("ITEMSHZ",tempitem); // con mA
+                                                // Log.d("ITEMSHZ",tempitem); // con mA
                                                 CorrenteSpinner.add(tempitem.substring(0,3)); // senza mA
                                                 Corrente.add(tempitem.substring(0,2)); // senza ultimo 0 ed mA
 
+                                                // riempio lo spinner con i valori delle correnti
                                                 fillSpinner();
 
                                             }
-
                                         }
                                     }
-
                                 }
                             }
-
                         }
 
                     }catch (Error e){e.printStackTrace();
 
                     }
-                   // Log.d("CORRENTE",String.valueOf(Corrente));
-                   // Log.d("CORRENTE_ID",String.valueOf(IDDI));
-
-
                 }
-
             }
             @Override
             public void onFailure(Call<JsonArray> call, Throwable t) {
@@ -703,7 +643,6 @@ public class MainActivity extends Activity {
         });
 
     }
-
 
 
 
@@ -717,7 +656,6 @@ public class MainActivity extends Activity {
                 String rc = String.valueOf(response.code());
                 if (!response.isSuccessful()) {
                     Log.d("http_get_profili_ko_rc : ", rc);
-
                 }
                 else{
                     Log.d("http_get_profili_ok_rc : ", rc);
@@ -728,7 +666,6 @@ public class MainActivity extends Activity {
                     String[] pairs = data.split(",");
 
                     for (int i=0; i<pairs.length;i++){
-
                         // prendo solo quelli a LED
                         if (pairs[i].substring(pairs[i].length()-5).equals("\"LED\"")){
                             // individuati i LED, prendo il Nome e l IdProfilo
@@ -756,15 +693,15 @@ public class MainActivity extends Activity {
                             // divido per isolare i nomi e salvo in un array d'appoggio
                             String []nomeProfilo = pairs[i+1].split(":");
                             // inizializzo l'array dove salverò i nomi dei profili
-                            // isolo i nomi dei profili e li salvo nell'array non considerando la scritta "Nome" del json
+                            // isolo i nomi dei profili e li salvo nell'arraylist non considerando la scritta "Nome" del json
                             for (int k=0;k<nomeProfilo.length;k++){
                                 if(!nomeProfilo[k].equals("\"Nome\"")){
-                                   nomeProfili.add(nomeProfilo[k].replace("\"",""));
+                                    nomeProfili.add(nomeProfilo[k].replace("\"",""));
                                 }
                             }
                         }
                     }
-
+                    // riempio lo spinner con i dati
                     fillSpinnerProfili();
                 }
             }
@@ -789,7 +726,7 @@ public class MainActivity extends Activity {
         int z=1;
         // scorro l'array ed aumento di tre ogni volta
         for (int i=0;i<CorrenteSpinner.size();i+=3 ){
-            potenze[z] = CorrenteSpinner.get(i)+CorrenteSpinner.get(i+1)+" "+CorrenteSpinner.get(i+2);
+            potenze[z] = CorrenteSpinner.get(i)+CorrenteSpinner.get(i+1)+" "+CorrenteSpinner.get(i+2)+" mA";
             z++; // 13 volte in pratica
         }
         int j=1;
@@ -803,20 +740,21 @@ public class MainActivity extends Activity {
         spinner2.setAdapter(powerAdapter);
     }
 
+    /**
+     * Riempio lo spinner con i dati dei profili
+     */
     public void fillSpinnerProfili(){
 
         String[]nomiProgrammi = new String[nomeProfili.size()+1]; // +1 altrimenti mi perdo l'ultimo
-        nomiProgrammi[0]= "Seleziona Profilo";
-        for(int i=1; i<nomeProfili.size()+1;i++) {
+        nomiProgrammi[0]= "Seleziona Profilo"; // hint
+        for(int i=1; i<nomeProfili.size()+1;i++) { // +1 altrimenti mi perdo l'ultimo
 
             nomiProgrammi[i]=nomeProfili.get(i-1); // i-1 perche parto da 1 causa hint ed altrimenti mi skippa il primo elemento
         }
-            ArrayAdapter<String> programAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinner_item, nomiProgrammi);
-            spinner1.setAdapter(programAdapter);
-
+        ArrayAdapter<String> programAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinner_item, nomiProgrammi);
+        spinner1.setAdapter(programAdapter);
 
     }
-
 
 
 

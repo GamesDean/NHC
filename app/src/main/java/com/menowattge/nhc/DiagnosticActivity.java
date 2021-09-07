@@ -2,8 +2,11 @@ package com.menowattge.nhc;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
@@ -58,13 +61,30 @@ public class DiagnosticActivity extends AppCompatActivity {
                     message = "Errore : Tag Corrotto";
                     tv.setText("Contenuto NFC : " + text);
                 }
+                // quindi se leggo "A50^" indico il link al playstore per scaricare o aprire l'altra app NHC
+                if(text.length()<10){
+                    message = "Formato non supportato";
+
+                    new AlertDialog.Builder(DiagnosticActivity.this)
+                            .setTitle(message)
+                            .setMessage("Installare NHC")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    final String appPackageName = "com.menowattge.nhc";
+                                    try {
+                                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                                    } catch (android.content.ActivityNotFoundException anfe) {
+                                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                                    }
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                }
                 Snackbar.make(view, message, 5000)
                         .setAction("Action", null).show();
-
-
-                text = null;
-
-
+                        text = null;
             }
         });
     }
