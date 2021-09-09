@@ -37,19 +37,19 @@
         android:id="@+id/nfc_contents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="230dp"
         android:layout_marginLeft="30dp"
         android:textColor="#b23027"
         android:hint="Avvicinati al tag poi premi il pulsante"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:textSize="25sp" />
+        android:textSize="24sp" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="190dp"
+            android:layout_marginTop="220dp"
             android:backgroundTint="#4f9e33"
             android:layout_centerHorizontal="true"
             app:srcCompat="@android:drawable/ic_menu_info_details" />

@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
@@ -58,11 +59,11 @@ public class DiagnosticActivity extends AppCompatActivity {
                 String message = "Lettura eseguita correttamente";
 
                 if (text==null){
-                    message = "Errore : Tag Corrotto";
-                    tv.setText("Contenuto NFC : " + text);
+                    message = "Errore : Tag vuoto o corrotto";
+                    tv.setText("Contenuto NFC : " + "ERRORE");
                 }
                 // quindi se leggo "A50^" indico il link al playstore per scaricare o aprire l'altra app NHC
-                if(text.length()<10){
+                if(text!=null&&text.length()<10){
                     message = "Formato non supportato";
 
                     new AlertDialog.Builder(DiagnosticActivity.this)
@@ -80,6 +81,7 @@ public class DiagnosticActivity extends AppCompatActivity {
                                 }
                             })
                             .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setCancelable(false)
                             .show();
                 }
                 Snackbar.make(view, message, 5000)
@@ -89,7 +91,48 @@ public class DiagnosticActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Converte il dato della lettura in un valore leggibile es : 9|405030|5 -> 23ERP 400500300 mA
+     * @param text ovvero la lettura es 9|405030|5
+     * @return 23ERP 400500300 mA
+     */
+    public String getProfileName(String text){
 
+        // divido basandomi sul pipe
+        String [] appoggio = text.split("\\|");
+        // il primo id non mi serve quindi skippo la posizione 0
+        String corrente = appoggio[1];
+        String idProfilo = appoggio[2];
+
+        // basato sul JSON /api/Profili
+        String nomeProfilo="";
+        switch (idProfilo) {
+            case "1" :nomeProfilo="23M2"; break;
+            case "2" :nomeProfilo="23M3"; break;
+            case "3" :nomeProfilo="22M2"; break;
+            case "4" :nomeProfilo="22M3"; break;
+            case "5" :nomeProfilo="ERP"; break;
+            case "6" :nomeProfilo="EMX"; break;
+            case "7" :nomeProfilo="23EMP"; break;
+            case "8" :nomeProfilo="22EMP"; break;
+            case "9" :nomeProfilo="23ERP"; break;
+            case "10" :nomeProfilo="22ERP"; break;
+            case "11" :nomeProfilo="23M2S2"; break;
+            case "12" :nomeProfilo="23M3S2"; break;
+            case "13" :nomeProfilo="22M2S2"; break;
+            case "14" :nomeProfilo="22M3S2"; break;
+            case "15" :nomeProfilo="LSM2"; break;
+            case "16" :nomeProfilo="LSM3"; break;
+            case "17" :nomeProfilo="LSM2S2"; break;
+            case "18" :nomeProfilo="LSM3S2"; break;
+            case "19" :nomeProfilo="R400"; break;
+            case "20" :nomeProfilo="22DMP"; break;
+        }
+        // aggiungo gli zeri finali ad ogni coppia
+        corrente = corrente.substring(0,2)+"0"+corrente.substring(2,4)+"0"+corrente.substring(4,6)+"0"+" mA";
+
+        return nomeProfilo+"-"+corrente;
+    }
 
 
     /******************************************************************************
@@ -129,7 +172,11 @@ public class DiagnosticActivity extends AppCompatActivity {
             Log.e("UnsupportedEncoding", e.toString());
         }
 
-        tv.setText("Contenuto NFC : " + text);
+        String textToShow;
+        textToShow = getProfileName(text);  // es 22M2 400500350 mA
+        tv.setTextColor(Color.parseColor("#0fb30c")); // verde
+        tv.setText("Contenuto NFC : " + textToShow);
+
     }
 
     public static void setupForegroundDispatch(final Activity activity, NfcAdapter adapter) {
@@ -163,6 +210,7 @@ public class DiagnosticActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setupForegroundDispatch(this,NfcAdapter.getDefaultAdapter(this));
+        tv.setTextColor(Color.parseColor("#b23027"));
         tv.setText("Avvicinati al tag poi premi il pulsante");
     }
 
