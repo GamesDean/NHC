@@ -93,6 +93,7 @@ public class MainActivity extends Activity {
     private List<String> idProfili   = new ArrayList<>();
     private List<String> nomeProfili   = new ArrayList<>();
 
+    private ProgressDialog pg;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,6 +109,9 @@ public class MainActivity extends Activity {
         btnDiagnostica =  findViewById(R.id.button);
         spinner1 = findViewById(R.id.spinner1);
         spinner2 = findViewById(R.id.spinner2);
+
+        pg = new ProgressDialog(new ContextThemeWrapper(MainActivity.this,R.style.ProgressDialogCustom));
+
 
         info.setTypeface(null, Typeface.BOLD);
 
@@ -143,6 +147,10 @@ public class MainActivity extends Activity {
         // -------------------------------END-DEBUG-----------------------------------
 
         pd = new ProgressDialog(new ContextThemeWrapper(MainActivity.this,R.style.ProgressDialogCustom));
+
+        pg.setMessage("Caricamento Profili...");
+        pg.show();
+        pg.setCanceledOnTouchOutside(false);
 
         /**
          * Spinner per selezionare il Profilo, l'utente sceglie es - "22ERP" ed il payload sarà "10" ovvero l'IdProfilo
@@ -492,7 +500,7 @@ public class MainActivity extends Activity {
                 write(payload,myTag);
                 Toast.makeText(context, "Operazione Completata", Toast.LENGTH_LONG ).show();
                 Intent intent = new Intent(this,MainActivity.class);
-                startActivity(intent);
+                //startActivity(intent);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -713,6 +721,27 @@ public class MainActivity extends Activity {
 
     }
 
+    public void dismissProgressDialog(){
+        final Thread timeout = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+
+                try {
+                    sleep(2000);
+
+                    pg.dismiss();
+
+                }catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+
+        timeout.start();
+    }
+
     /**
      * Riempio lo spinner con i dati delle potenze
      */
@@ -738,6 +767,8 @@ public class MainActivity extends Activity {
         Log.d("CORRENTE_POT", Arrays.toString(potenzeTrue));
         ArrayAdapter<String> powerAdapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.spinner_item, potenze);
         spinner2.setAdapter(powerAdapter);
+
+        dismissProgressDialog();
     }
 
     /**
@@ -753,7 +784,14 @@ public class MainActivity extends Activity {
         }
         ArrayAdapter<String> programAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinner_item, nomiProgrammi);
         spinner1.setAdapter(programAdapter);
+        dismissProgressDialog();
+    }
 
+    // quando premo back, chiude l'app
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+        finish();
     }
 
 

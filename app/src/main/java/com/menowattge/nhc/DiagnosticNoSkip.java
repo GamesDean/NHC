@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
@@ -28,7 +27,7 @@ import com.menowattge.nhc.nfcreadwrite.R;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 
-public class DiagnosticActivity extends AppCompatActivity {
+public class DiagnosticNoSkip extends AppCompatActivity {
 
     Tag myTag2;
     TextView tv;
@@ -40,11 +39,11 @@ public class DiagnosticActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_diagnostic);
+        setContentView(R.layout.activity_diagnostic_no_skip);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Diagnostica");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Controllo Tag");
 
         tv= findViewById(R.id.nfc_contents);
 
@@ -66,7 +65,7 @@ public class DiagnosticActivity extends AppCompatActivity {
                 if(text!=null&&text.length()<10){
                     message = "Formato non supportato";
 
-                    new AlertDialog.Builder(DiagnosticActivity.this)
+                    new AlertDialog.Builder(DiagnosticNoSkip.this)
                             .setTitle(message)
                             .setMessage("Installare NHC")
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -86,7 +85,7 @@ public class DiagnosticActivity extends AppCompatActivity {
                 }
                 Snackbar.make(view, message, 5000)
                         .setAction("Action", null).show();
-                        text = null;
+                text = null;
             }
         });
     }
@@ -175,9 +174,11 @@ public class DiagnosticActivity extends AppCompatActivity {
         // mostro a video il nome del profilo solo con i dati "nuovi"
         String textToShow;
         if (text.length()>=10) {
-            textToShow = getProfileName(text);  // es 22M2 400500350 mA
-            tv.setTextColor(Color.parseColor("#0fb30c")); // verde
-            tv.setText("Contenuto NFC : " + textToShow);
+            //textToShow = getProfileName(text);  // es 22M2 400500350 mA
+            //tv.setTextColor(Color.parseColor("#0fb30c")); // verde
+            //tv.setText("Contenuto NFC : " + textToShow);
+            Intent intent = new Intent(this,MainActivity.class);
+            startActivity(intent);
         }
 
 
@@ -214,14 +215,9 @@ public class DiagnosticActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setupForegroundDispatch(this,NfcAdapter.getDefaultAdapter(this));
-        tv.setTextColor(Color.parseColor("#b23027"));
+       // tv.setTextColor(Color.parseColor("#b23027"));
         tv.setText("Avvicinati al tag poi premi il pulsante");
     }
 
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
-    }
+
 }
