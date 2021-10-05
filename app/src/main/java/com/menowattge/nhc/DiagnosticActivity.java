@@ -31,10 +31,13 @@ import java.util.Objects;
 public class DiagnosticActivity extends AppCompatActivity {
 
     Tag myTag2;
-    TextView tv;
+    TextView tv,writeText;
     PendingIntent pendingIntent;
     String text = null;
+    String payloadz="";
+    FloatingActionButton fabCopia;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,10 +50,17 @@ public class DiagnosticActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle("Diagnostica");
 
         tv= findViewById(R.id.nfc_contents);
-
+        writeText = findViewById(R.id.write_text);
+        // all'avvio è invisibile, lo rendo visibile dopo aver fatto una lettura
+        writeText.setVisibility(View.INVISIBLE);
         pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
         FloatingActionButton fab = findViewById(R.id.fab);
+        fabCopia = findViewById(R.id.write_copia);
+        // all'avvio è invisibile, lo rendo visibile dopo aver fatto una lettura
+        fabCopia.setVisibility(View.INVISIBLE);
+
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,6 +99,18 @@ public class DiagnosticActivity extends AppCompatActivity {
                         text = null;
             }
         });
+
+
+        fabCopia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), CopyPaste.class);
+                intent.putExtra("payload",payloadz);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     /**
@@ -154,7 +176,7 @@ public class DiagnosticActivity extends AppCompatActivity {
             buildTagViews(msgs);
         }
     }
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "RestrictedApi"})
     private void buildTagViews(NdefMessage[] msgs) {
         if (msgs == null || msgs.length == 0) return;
 
@@ -168,6 +190,7 @@ public class DiagnosticActivity extends AppCompatActivity {
         try {
             // Get the Text
             text = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
+            payloadz=text;
         } catch (UnsupportedEncodingException e) {
             Log.e("UnsupportedEncoding", e.toString());
         }
@@ -178,10 +201,17 @@ public class DiagnosticActivity extends AppCompatActivity {
             textToShow = getProfileName(text);  // es 22M2 400500350 mA
             tv.setTextColor(Color.parseColor("#0fb30c")); // verde
             tv.setText("Contenuto NFC : " + textToShow);
+
+            // mostrare pulsante copia
+
+            writeText.setVisibility(View.VISIBLE);
+            fabCopia.setVisibility(View.VISIBLE);
         }
 
 
     }
+
+
 
     public static void setupForegroundDispatch(final Activity activity, NfcAdapter adapter) {
         final Intent intent = new Intent(activity, activity.getClass());

@@ -446,32 +446,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void checkTag(){
-
-        pd.setMessage("Ricerca TAG NFC in corso...");
-        pd.show();
-        pd.setCanceledOnTouchOutside(false);
-
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    System.out.println("testo :" +text);
-                    while (text==null){
-                        readFromIntent(getIntent());
-                        System.out.println("testo_2 :" +text);
-                    }
-                    pd.dismiss();
-                    Log.d("DISMISS","PD");
-
-                } catch (final Exception e) {
-                    // pd.dismiss();
-                    Toast.makeText(context, "Errore Lettura", Toast.LENGTH_LONG ).show();
-                }
-            }
-        }).start();
-
-
-    }
 
 
 

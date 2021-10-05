@@ -15,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#4f9e33"
+            android:background="#c9520e"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
@@ -33,51 +33,28 @@
         android:background="@drawable/rounded_edge_debug">
 
 
-    <TextView
-        android:id="@+id/nfc_contents"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="230dp"
-        android:layout_marginLeft="30dp"
-        android:textColor="#b23027"
-        android:hint="Avvicinati al tag poi premi il pulsante"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:textSize="24sp" />
+        <TextView
+            android:id="@+id/nfc_contents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="230dp"
+            android:layout_marginLeft="30dp"
+            android:textColor="#b23027"
+            android:hint="Premi il pulsante - POI - avvicinati al TAG"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textSize="24sp" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
+            android:id="@+id/fab_copy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="220dp"
-            android:backgroundTint="#4f9e33"
+            android:backgroundTint="#c9520e"
             android:layout_centerHorizontal="true"
-            app:srcCompat="@android:drawable/ic_menu_info_details" />
+            app:srcCompat="@android:drawable/ic_menu_save" />
 
     </RelativeLayout>>
 
-
-
-    <TextView
-        android:id="@+id/write_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="460dp"
-        android:layout_marginLeft="30dp"
-        android:textColor="#666"
-        android:hint="Per copiare la configurazione in un altro HIXOS, premere il pulsante BLU "
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:textSize="24sp" />
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/write_copia"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="500dp"
-        android:backgroundTint="#4284f5"
-        android:layout_gravity="center"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
 
 </android.support.design.widget.CoordinatorLayout>
