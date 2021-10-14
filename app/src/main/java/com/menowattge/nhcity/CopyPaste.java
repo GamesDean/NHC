@@ -1,4 +1,4 @@
-package com.menowattge.nhc;
+package com.menowattge.nhcity;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -21,7 +21,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.menowattge.nhc.nfcreadwrite.R;
+import com.menowattge.nhcity.nfcreadwrite.R;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

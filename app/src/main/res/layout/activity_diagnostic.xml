@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.menowattge.nhc.DiagnosticActivity">
+    tools:context="com.menowattge.nhcity.DiagnosticActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -54,15 +54,23 @@
             android:layout_centerHorizontal="true"
             app:srcCompat="@android:drawable/ic_menu_info_details" />
 
-    </RelativeLayout>>
+    </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="400sp"
+        android:layout_marginBottom="50sp"
 
+        android:background="@drawable/rounded_edge_debug">
 
     <TextView
         android:id="@+id/write_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="460dp"
+        android:layout_marginTop="420dp"
         android:layout_marginLeft="30dp"
         android:textColor="#666"
         android:hint="Per copiare la configurazione in un altro HIXOS, premere il pulsante BLU "
@@ -71,13 +79,15 @@
         android:textSize="24sp" />
 
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/write_copia"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="500dp"
-        android:backgroundTint="#4284f5"
-        android:layout_gravity="center"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/write_copia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="270dp"
+            android:backgroundTint="#4284f5"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,4 +1,4 @@
-package com.menowattge.nhc;
+package com.menowattge.nhcity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -22,8 +22,9 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.menowattge.nhc.nfcreadwrite.R;
+import com.menowattge.nhcity.nfcreadwrite.R;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
@@ -82,7 +83,7 @@ public class DiagnosticActivity extends AppCompatActivity {
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
 
-                                    final String appPackageName = "com.menowattge.nhc";
+                                    final String appPackageName = "com.menowattge.nhcity";
                                     try {
                                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
                                     } catch (android.content.ActivityNotFoundException anfe) {
@@ -225,8 +226,9 @@ public class DiagnosticActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
-        // per leggere senza premere pulsante
-        // readFromIntent(intent);
+
+        Toast.makeText(getApplicationContext(),"Lettura eseguita : premere il pulsante ", Toast.LENGTH_LONG).show() ;
+
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())){
             myTag2 = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 

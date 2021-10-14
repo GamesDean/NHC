@@ -1,4 +1,4 @@
-package com.menowattge.nhc;
+package com.menowattge.nhcity;
 
 import com.google.gson.JsonArray;
 

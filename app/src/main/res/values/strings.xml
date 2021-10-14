@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Nfc Hixos Configurator</string>
+    <string name="app_name">Nfc Hixos Citymonitor</string>
     <string name="action_settings">Settings</string>
     <string name="title">Hello World NFC!</string>
     <string name="title_activity_splash_screen">FullscreenActivity</string>

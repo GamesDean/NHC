@@ -1,4 +1,4 @@
-package com.menowattge.nhc;
+package com.menowattge.nhcity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -34,7 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
-import com.menowattge.nhc.nfcreadwrite.R;
+import com.menowattge.nhcity.nfcreadwrite.R;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

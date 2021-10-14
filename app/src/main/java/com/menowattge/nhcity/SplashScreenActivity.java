@@ -1,11 +1,11 @@
-package com.menowattge.nhc;
+package com.menowattge.nhcity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
-import com.menowattge.nhc.nfcreadwrite.R;
+import com.menowattge.nhcity.nfcreadwrite.R;
 
 /**
  * Propone a video una schermata di presentazione

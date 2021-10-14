@@ -1,4 +1,4 @@
-package com.menowattge.nhc.nfcreadwrite;
+package com.menowattge.nhcity.nfcreadwrite;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

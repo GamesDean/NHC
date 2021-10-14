@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center|bottom"
     android:orientation="vertical"
-    tools:context="com.menowattge.nhc.SplashScreenActivity">
+    tools:context="com.menowattge.nhcity.SplashScreenActivity">
 
 
     <ImageView

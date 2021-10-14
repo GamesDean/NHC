@@ -1,4 +1,4 @@
-package com.menowattge.nhc
+package com.menowattge.nhcity
 
 import android.content.Intent
 import android.graphics.Color
@@ -8,7 +8,7 @@ import android.view.Window
 import android.view.WindowManager
 import com.github.paolorotolo.appintro.AppIntro
 import com.github.paolorotolo.appintro.AppIntroFragment
-import com.menowattge.nhc.nfcreadwrite.R
+import com.menowattge.nhcity.nfcreadwrite.R
 
 class MyCustomAppIntro : AppIntro() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,8 +24,14 @@ class MyCustomAppIntro : AppIntro() {
                 R.drawable.nfc,
                 Color.parseColor("#87b5b7")
         ))
+        addSlide(AppIntroFragment.newInstance("2) Lettura di Controllo ",
+                "Controlla il firmware dell'HIXOS",
+                R.drawable.nhcity_start,
+                Color.parseColor("#87b5b7")
 
-        addSlide(AppIntroFragment.newInstance("2) Selezionare Programma e Potenza ",
+        ))
+
+        addSlide(AppIntroFragment.newInstance("3) Selezionare Programma e Potenza ",
                 "Dal menù a tendina, come da immagine",
                 R.drawable.seleziona,
                 Color.parseColor("#87b5b7")
@@ -50,8 +56,14 @@ class MyCustomAppIntro : AppIntro() {
 
         ))
         addSlide(AppIntroFragment.newInstance("4c) Dati NFC Hixos ",
-                "In rosso il contenuto del TAG",
-                R.drawable.diagnostica_3,
+                "Tasto blu se si vuole copiare la configurazione",
+                R.drawable.nhcity_copy,
+                Color.parseColor("#87b5b7")
+
+        ))
+        addSlide(AppIntroFragment.newInstance("5) Ultimare una copia  ",
+                "Tasto arancione per copiare la configurazione",
+                R.drawable.nhcity_orange,
                 Color.parseColor("#87b5b7")
 
         ))
@@ -70,7 +82,7 @@ class MyCustomAppIntro : AppIntro() {
     override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
         // Decide what to do when the user clicks on "Done"
-        val intent = Intent(applicationContext, MainActivity::class.java)
+        val intent = Intent(applicationContext, DiagnosticNoSkip::class.java)
         startActivity(intent)
         finish()
     }

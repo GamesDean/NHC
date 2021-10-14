@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.menowattge.nhc.nfcreadwrite">
+    package="com.menowattge.nhcity.nfcreadwrite">
 
     <!--uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -21,7 +21,7 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.menowattge.nhc.SplashScreenActivity"
+            android:name="com.menowattge.nhcity.SplashScreenActivity"
             android:label="@string/app_name"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.menowattge.nhc.MyCustomAppIntro"
+        <activity android:name="com.menowattge.nhcity.MyCustomAppIntro"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:label="NHC Info" >
             <!--intent-filter>
@@ -43,7 +43,7 @@
             </intent-filter-->
         </activity>
         <activity
-            android:name="com.menowattge.nhc.DiagnosticNoSkip"
+            android:name="com.menowattge.nhcity.DiagnosticNoSkip"
             android:label="@string/title_activity_diagnostic"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -60,7 +60,7 @@
         </activity>
 
         <activity
-            android:name="com.menowattge.nhc.DiagnosticActivity"
+            android:name="com.menowattge.nhcity.DiagnosticActivity"
             android:label="@string/title_activity_diagnostic"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -77,7 +77,7 @@
         </activity>
 
         <activity
-            android:name="com.menowattge.nhc.MainActivity"
+            android:name="com.menowattge.nhcity.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar">
@@ -95,7 +95,7 @@
         </activity>
 
         <activity
-            android:name="com.menowattge.nhc.CopyPaste"
+            android:name="com.menowattge.nhcity.CopyPaste"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar">
